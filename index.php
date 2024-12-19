@@ -102,6 +102,30 @@ get_header(); ?>
 
 <div class="container-fluid p-0">
     <?php
+
+    function get_products_by_category_name($category_name = 'san-pham-moi-nhat') {
+        $args = array(
+            'post_type'      => 'product',
+            'posts_per_page' => -1,
+            'status'         => 'publish',
+            'tax_query'      => array(
+                array(
+                    'taxonomy' => 'product_cat',
+                    'field'    => 'slug',
+                    'terms'    => $category_name
+                )
+            )
+        );
+
+        $products = wc_get_products($args);
+        print_r($products);
+        foreach ($products as $product) {
+            echo $product->get_name(); // Lấy tên sản phẩm
+        }
+    }
+
+    get_products_by_category_name();
+
     function get_image_from_library($image_name) {
         $args = array(
             'post_type' => 'attachment',

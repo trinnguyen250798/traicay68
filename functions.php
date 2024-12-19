@@ -20,3 +20,6 @@ function enqueue_bootstrap_slick_and_boxicons() {
     wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.6.0.min.js', array(), null, true);
 }
 add_action('wp_enqueue_scripts', 'enqueue_bootstrap_slick_and_boxicons');
+
+
+
