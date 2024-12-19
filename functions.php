@@ -1,7 +1,6 @@
 <?php
 function enqueue_bootstrap_slick_and_boxicons() {
 
-
     // Enqueue Bootstrap CSS và JS
     wp_enqueue_style('bootstrap-css', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
     wp_enqueue_script('bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js', array('jquery'), null, true);
@@ -9,6 +8,7 @@ function enqueue_bootstrap_slick_and_boxicons() {
     // Enqueue Slick Carousel CSS và JS
     wp_enqueue_style('slick-css', 'https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.css');
     wp_enqueue_script('slick-js', 'https://cdn.jsdelivr.net/jquery.slick/1.6.0/slick.min.js', array('jquery'), null, true);
+
 
     // Enqueue BoxIcons CSS
     wp_enqueue_style('boxicons-css', 'https://cdn.jsdelivr.net/npm/boxicons@2.0.7/css/boxicons.min.css');
@@ -20,6 +20,3 @@ function enqueue_bootstrap_slick_and_boxicons() {
     wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.6.0.min.js', array(), null, true);
 }
 add_action('wp_enqueue_scripts', 'enqueue_bootstrap_slick_and_boxicons');
-
-
-

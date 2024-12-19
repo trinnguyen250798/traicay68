@@ -56,39 +56,45 @@ get_header(); ?>
         font-size: 14px;
         font-weight: 600;
     }
-    .title{
+    .title {
         font-family: 'Montserrat', sans-serif;
         font-size: 43px;
+        margin: 35px;
+        position: relative; /* Đặt position để chứa các phần tử con tuyệt đối */
+        text-align: center; /* Căn giữa nội dung */
+        overflow: hidden; /* Đảm bảo không cho phần tử con tràn ra ngoài */
     }
+
     .title span {
         color: #aebcb9;
         position: relative;
         display: inline-block;
-        padding-bottom: 10px; /* Khoảng cách dưới chữ */
+        padding-bottom: 10px;
     }
 
     .title svg {
         position: absolute;
-        z-index: -99;
-        bottom: -12px;
-        left: 53%;
-        width: 150px;
-        height: 61px;
-        /* font-size: 21px; */
+        z-index: -1; /* Đặt SVG nằm dưới nội dung chữ */
+
+        left: 56%; /* Đặt SVG ở giữa theo chiều ngang */
+        transform: translateX(-50%); /* Căn chỉnh để SVG nằm chính giữa */
+        width: 148px;
+        height: 69px;
         fill: none;
         stroke: #dc0303;
         stroke-width: 8px;
-        animation: movePath 2s infinite linear;
+        animation: movePath 2s infinite;
     }
 
     @keyframes movePath {
         from {
-            stroke-dasharray: 0, 2000; /* Đặt chiều dài đoạn cắt */
+            stroke-dasharray: 0, 2000;
         }
         to {
-            stroke-dasharray: 2000, 2000; /* Hoàn tất đường gạch */
+            stroke-dasharray: 2000, 2000;
         }
     }
+
     .box-danhmuc a{
         text-decoration: none;
        font-size: 14px;
@@ -97,13 +103,115 @@ get_header(); ?>
     .box-danhmuc a.active{
        border-bottom: 1px solid #333c43;
     }
+    .box-item-best-sales{
+        margin: 0 !important;
+    }
+    .box-item-best-sales .item-facture {
+       padding: 0!important;
+        box-sizing: border-box !important;
+
+    }
+    .box-item-best-sales p {
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 30px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #070707;
+
+    }
+    .box-item-best-sales img {
+        max-width: 100%;
+        height: 465px;
+        display: block;
+        margin-bottom: 20px;
+    }
+    .item-facture:hover{
+        box-shadow: rgba(6, 24, 44, 0.4) 0px 0px 0px 2px, rgba(6, 24, 44, 0.65) 0px 4px 6px -1px, rgba(255, 255, 255, 0.08) 0px 1px 0px inset;
+    }
+
+    .image-wrapper {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: 465px;
+    }
+
+    /* Cấu hình ảnh mặc định */
+    .default-img, .hover-img {
+        width: 100%;
+        height: auto;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    /* Ẩn hình ảnh hover */
+    .hover-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: 1;
+        transition: opacity 0.3s ease-in-out;
+        height: 465px;
+    }
+    /* Hiệu ứng khi hover */
+    .image-wrapper:hover .default-img {
+        opacity: 0;
+    }
+    .image-wrapper:hover .hover-img {
+        opacity: 1;
+        transform: scale(1.2); /* Phóng to hình ảnh hover */
+
+    }
+
+
+    .slick-prev, .slick-next {
+        background-color: transparent; /* Bỏ nền */
+        color: #000; /* Màu chữ */
+        border: none; /* Bỏ viền */
+        border-radius: 50%; /* Biểu tượng tròn */
+        padding: 10px; /* Khoảng cách bên trong */
+        font-size: 20px; /* Kích thước icon */
+        position: absolute;
+        top: 50%;
+        z-index: 10;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .slick-prev {
+        left: -30px; /* Vị trí của nút "prev" */
+    }
+
+    .slick-next {
+        right: -30px; /* Vị trí của nút "next" */
+    }
+
+    .slick-prev::before, .slick-next::before {
+        content: ''; /* Bỏ nội dung mặc định */
+    }
+
+    .slick-prev i {
+        content: '\f104'; /* Icon cho nút "prev" (Font Awesome) */
+    }
+
+    .slick-next i {
+        content: '\f105'; /* Icon cho nút "next" (Font Awesome) */
+    }
+
+    .slick-prev:hover, .slick-next:hover {
+        background-color: #333; /* Màu nền khi hover */
+        color: #fff; /* Màu chữ khi hover */
+    }
 
 </style>
 
 <div class="container-fluid p-0">
     <?php
 
-    function get_products_by_category_name($category_name = 'san-pham-moi-nhat') {
+    function get_products_by_category_name($category_name = 'san-pham-noi-bat') {
         $args = array(
             'post_type'      => 'product',
             'posts_per_page' => -1,
@@ -116,15 +224,11 @@ get_header(); ?>
                 )
             )
         );
-
         $products = wc_get_products($args);
-        print_r($products);
-        foreach ($products as $product) {
-            echo $product->get_name(); // Lấy tên sản phẩm
-        }
+        return $products;
     }
 
-    get_products_by_category_name();
+    $list_facture = get_products_by_category_name();
 
     function get_image_from_library($image_name) {
         $args = array(
@@ -146,6 +250,7 @@ get_header(); ?>
     }
     $image_url1 = get_image_from_library('banner1');
     $image_url2 = get_image_from_library('banner2');
+    $image_url3 = get_image_from_library('legit');
     if($image_url1){
         $url1 = esc_url($image_url1);
     }
@@ -153,7 +258,7 @@ get_header(); ?>
         $url2 = esc_url($image_url2);
     }
     ?>
-    <div id="carouselExampleControls" class="carousel slide" data-ride="">
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img class="d-block w-100" src="<?php echo $url1??'' ?>" alt="Second slide">
@@ -172,22 +277,22 @@ get_header(); ?>
             <span class="carousel-control-next-icon" style="color: #333333"  aria-hidden="true"></span>
         </a>
     </div>
-    <div class="d-flex justify-content-between box-info-1">
-       <div class="d-flex  align-items-center" style="gap:20px">
+    <div class="row box-info-1 m-0">
+       <div class="col-sm-4 justify-content-center d-flex  align-items-center" style="gap:20px">
            <i class='bx bx-medal'></i>
            <div>
                <p class="mb-0" style="font-size: 18px">Trái Cây Thượng Hạng</p>
                <p class="mb-0">100% Trái cây nhập khẩu tuyển lựa</p>
            </div>
        </div>
-        <div class="d-flex  align-items-center" style="gap:20px">
+        <div class="col-sm-4 justify-content-center d-flex  align-items-center" style="gap:20px">
             <i class='bx bxs-package'></i>
             <div>
                 <p class="mb-0" style="font-size: 18px">Giao Hàng Siêu Tốc 2H</p>
                 <p class="mb-0">100% Trái cây nhập khẩu tuyển lựa</p>
             </div>
         </div>
-        <div class="d-flex  align-items-center" style="gap:20px">
+        <div class="col-sm-4 justify-content-center d-flex  align-items-center" style="gap:20px">
             <i class='bx bx-donate-heart' ></i>
             <div>
                 <p class="mb-0" style="font-size: 18px">Cam Kết Hài Lòng</p>
@@ -195,31 +300,80 @@ get_header(); ?>
             </div>
         </div>
     </div>
-
-
     <div class="mt-4">
-
-        <p class="text-center title">
+        <div class="text-center title">
             Sản Phẩm <span>Nổi Bật</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" preserveAspectRatio="none">
                 <path d="M9.3,127.3c49.3-3,150.7-7.6,199.7-7.4c121.9,0.4,189.9,0.4,282.3,7.2C380.1,129.6,181.2,130.6,70,139 c82.6-2.9,254.2-1,335.9,1.3c-56,1.4-137.2-0.3-197.1,9"></path>
             </svg>
-        </p>
+        </div>
+    </div>
+    <div class="row box-item-best-sales">
+        <?php
+        if(!empty($list_facture)){
+            foreach ($list_facture as $product ){
+                $formatted_price = number_format($product->get_price(), 0, '.', ',');
+                $image_id = $product->get_image_id();
+                $image_url = wp_get_attachment_image_url($image_id, 'full');
+                $gallery_image_ids = $product->get_gallery_image_ids();
+                $img_hover = esc_url($image_url??'');
+                if(!empty($gallery_image_ids) && count($gallery_image_ids) > 1 ){
+                    $img_hover = wp_get_attachment_image_url($gallery_image_ids[1], 'full');
+                }
+                ?>
+                <div class="col-sm-3 item-facture">
+                    <div class="image-wrapper mb-4">
+                        <img class="default-img" src="<?php echo esc_url($image_url ?? '') ?>" alt="">
+                        <img class="hover-img " src="<?php echo esc_url($img_hover ?? '') ?>" alt="">
+                    </div>
+                    <p><?php echo $product->get_name() ?> </p>
+                    <p style="font-weight: 300; font-size: 12px"><?php echo $formatted_price ?? '' ?> đ</p>
+                </div>
 
-        <div class="d-flex box-danhmuc w-100 justify-content-center align-items-center" style="gap:30px;">
-            <a href="javascript:void(0)" class="a-tab-noibat choose_tab_moi_nhat " onclick="load_sp_dm_noibat('moi_nhat')">SẢN PHẨM MỚI NHẤT</a>
-            <a href="javascript:void(0)" class="a-tab-noibat choose_tab_ban_chay" onclick="load_sp_dm_noibat('ban_chay')">SẢN PHẨM BÁN CHẠY</a>
+            <?php }
+        }
+
+        ?>
+
+    </div>
+    <div  style=" margin-top: 40px;   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;">
+        <img style="width: 100%;height: 400px" src="<?php echo $image_url3 ?>" alt="">
+    </div>
+    <div class="mt-4">
+        <div class="text-center title">
+             Khách hàng <span>Đánh Giá</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 150" preserveAspectRatio="none">
+                <path d="M9.3,127.3c49.3-3,150.7-7.6,199.7-7.4c121.9,0.4,189.9,0.4,282.3,7.2C380.1,129.6,181.2,130.6,70,139 c82.6-2.9,254.2-1,335.9,1.3c-56,1.4-137.2-0.3-197.1,9"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="box-comment">
+        <div class="your-slider-class">
+            <div><img src="path/to/image1.jpg" alt="Image 1"></div>
+            <div><img src="path/to/image2.jpg" alt="Image 2"></div>
+            <div><img src="path/to/image3.jpg" alt="Image 3"></div>
+            <div><img src="path/to/image1.jpg" alt="Image 1"></div>
+            <div><img src="path/to/image2.jpg" alt="Image 2"></div>
+            <div><img src="path/to/image3.jpg" alt="Image 3"></div>
+            <!-- Thêm nhiều hình ảnh khác -->
         </div>
 
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
-        function load_sp_dm_noibat(type) {
-            $('.a-tab-noibat').removeClass('active');
-            $(`.choose_tab_${type}`).addClass('active');
-        }
+
+       $(()=>{
+           $('.your-slider-class').slick({
+               slidesToShow: 3,
+               slidesToScroll: 1,
+               arrows: false
+           });
+       })
+
     </script>
 
     <?php get_footer(); ?>
