@@ -205,12 +205,117 @@ get_header(); ?>
         background-color: #333; /* Màu nền khi hover */
         color: #fff; /* Màu chữ khi hover */
     }
+    .box-comment{
+        margin: 0 50px;
+    }
+    .slider-item{
+        text-align: center;
+    }
+    .slider-item p{
+        width: 60%;
+        margin: auto;
+    }
+
+
+
+    .Marquee {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 15px;
+        margin: 30px 0;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        padding: 10px;
+        color: #070707;
+        display: flex;
+        overflow: hidden;
+    }
+    .Marquee-content {
+        display: flex;
+        animation: marquee 15s linear infinite running;
+    }
+    .Marquee-start {
+        width: max-content;
+        margin: 0 0.5em;
+        padding: 0.5em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    .Marquee-tag {
+        width: max-content;
+        margin: 0 0.5em;
+        padding: 0.5em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+    @-moz-keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translate(-50%);
+        }
+    }
+    @-webkit-keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translate(-50%);
+        }
+    }
+    @-o-keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translate(-50%);
+        }
+    }
+    @keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translate(-50%);
+        }
+    }
+
+
+    @media (max-width: 768px) {
+        #carouselExampleControls {
+            height: 243px !important;
+        }
+        .carousel-item img {
+            height: 243px !important;
+            max-height: 580px;
+        }
+        .box-info-1 {
+            gap: 14px;
+        }
+        .box-item-best-sales {
+            gap: 4px;
+        }
+        .box-item-best-sales .col-sm-3{
+            border-bottom: 1px solid;
+        }
+        .img-why img{
+            height: 100% !important;
+        }
+        .title {
+            margin: 0 0 35px !important;
+            font-size: 37px;
+        }
+    }
+
+
 
 </style>
 
 <div class="container-fluid p-0">
     <?php
-
     function get_products_by_category_name($category_name = 'san-pham-noi-bat') {
         $args = array(
             'post_type'      => 'product',
@@ -227,9 +332,7 @@ get_header(); ?>
         $products = wc_get_products($args);
         return $products;
     }
-
     $list_facture = get_products_by_category_name();
-
     function get_image_from_library($image_name) {
         $args = array(
             'post_type' => 'attachment',
@@ -336,7 +439,7 @@ get_header(); ?>
         ?>
 
     </div>
-    <div  style=" margin-top: 40px;   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;">
+    <div class="img-why" style=" margin-top: 40px;   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;">
         <img style="width: 100%;height: 400px" src="<?php echo $image_url3 ?>" alt="">
     </div>
     <div class="mt-4">
@@ -348,17 +451,112 @@ get_header(); ?>
         </div>
     </div>
     <div class="box-comment">
-        <div class="your-slider-class">
-            <div><img src="path/to/image1.jpg" alt="Image 1"></div>
-            <div><img src="path/to/image2.jpg" alt="Image 2"></div>
-            <div><img src="path/to/image3.jpg" alt="Image 3"></div>
-            <div><img src="path/to/image1.jpg" alt="Image 1"></div>
-            <div><img src="path/to/image2.jpg" alt="Image 2"></div>
-            <div><img src="path/to/image3.jpg" alt="Image 3"></div>
-            <!-- Thêm nhiều hình ảnh khác -->
+        <div class="your-slider-class justify-content-center ">
+            <div>
+                <div class="slider-item">
+                    <p><i>"Mình và bạn mình ghé đây mua trái cây tặng ông bà, cảm nhận đầu tiên là cửa hàng sạch sẽ, trái cây tươi ngon. Nhân viên ở đây hỗ trợ mình rất nhiệt tình. Chắc chắn sẽ quay lại!"</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Nguyễn Văn Hùng</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Cửa hàng trái cây này đúng là đáng tin cậy. Trái cây được đóng gói cẩn thận, rất đẹp để làm quà. Các bạn nhân viên luôn niềm nở, mình cảm thấy rất hài lòng."</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Lê Thị Thu Hà</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Mình thường mua trái cây ở đây vì chất lượng luôn đảm bảo. Cửa hàng take care khách hàng cực kỳ tốt, nhất là khi mình cần gợi ý chọn quà. Rất đáng để ủng hộ lâu dài!"</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Trần Minh Tuấn</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Cửa hàng có nhiều loại trái cây nhập khẩu, tất cả đều rất tươi. Mình mua tặng sếp, được nhân viên gói quà miễn phí và rất đẹp. Rất thích sự chu đáo của cửa hàng!"</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Phạm Thị Hạnh</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Lần đầu đến đây nhưng mình đã ấn tượng. Trái cây không chỉ tươi ngon mà còn được bày trí rất bắt mắt. Dịch vụ khách hàng ở đây làm mình cảm thấy rất thoải mái."</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Vũ Hoàng Nam</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Mình mua trái cây tặng họ hàng ở đây, mọi người khen rất nhiều. Nhân viên ở cửa hàng cực kỳ chu đáo, mình thích cách phục vụ và chất lượng sản phẩm của họ."</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Đặng Thị Mai Linh</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Cửa hàng trái cây này có không gian sạch sẽ, thoáng mát. Nhân viên nhiệt tình tư vấn loại trái cây phù hợp. Cảm giác rất đáng đồng tiền bỏ ra. Sẽ giới thiệu cho bạn bè!"</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Bùi Thanh Tùng</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Mình rất hài lòng khi ghé mua ở đây. Trái cây tươi, giá hợp lý, và cách các bạn phục vụ thật sự chuyên nghiệp. Mình sẽ quay lại vào lần tới!"</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Nguyễn Thùy Trang</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Cửa hàng trái cây này là lựa chọn số một của mình. Nhân viên cực kỳ thân thiện, trái cây được kiểm tra kỹ lưỡng. Rất hài lòng!"</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Trương Quốc Huy</p>
+                </div>
+            </div>
+            <div>
+                <div class="slider-item">
+                    <p><i>"Đây là nơi mình thường ghé mỗi dịp lễ Tết. Trái cây tươi, đóng gói đẹp, và quan trọng là nhân viên rất chu đáo. Mình rất an tâm khi mua hàng ở đây!"</i></p>
+                    <p style="margin-top: 14px; font-weight: 600; font-size: 17px;">Hoàng Kim Chi</p>
+                </div>
+            </div>
         </div>
 
     </div>
+    <div class="Marquee">
+        <div class="Marquee-content">
+
+            <div class="Marquee-start">DỊCH VỤ ĐẲNG CẤP</div>
+                <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">100% CAM KẾT HÀI LÒNG</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">TRÁI CÂY TƯƠI NGON</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">GIAO HÀNG TẬN TAY</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">HỖ TRỢ 24/7</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">CAM KẾT CHẤT LƯỢNG</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">DỊCH VỤ CHUYÊN NGHIỆP</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">TRÁI CÂY TƯƠI NGON HẰNG NGÀY</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">HỖ TRỢ KHÁCH HÀNG TẬN TÂM</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-start">DỊCH VỤ ĐẲNG CẤP</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">100% CAM KẾT HÀI LÒNG</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">TRÁI CÂY TƯƠI NGON</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">GIAO HÀNG TẬN TAY</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">HỖ TRỢ 24/7</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">CAM KẾT CHẤT LƯỢNG</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">DỊCH VỤ CHUYÊN NGHIỆP</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">TRÁI CÂY TƯƠI NGON HẰNG NGÀY</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+            <div class="Marquee-tag">HỖ TRỢ KHÁCH HÀNG TẬN TÂM</div>
+                 <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
+        </div>
+    </div>
+
 
 
 
@@ -367,11 +565,18 @@ get_header(); ?>
     <script type="text/javascript">
 
        $(()=>{
+
+
            $('.your-slider-class').slick({
-               slidesToShow: 3,
+               slidesToShow: 1,
                slidesToScroll: 1,
-               arrows: false
+               arrows: false,
+               autoplay: true,
+               autoplaySpeed: 1800,
+               pauseOnHover: true // Dừng khi rê chuột lên slider
            });
+
+
        })
 
     </script>
