@@ -8,7 +8,9 @@
 get_header(); ?>
 
 <style>
-
+    body {
+        font-family: 'Montserrat', sans-serif;
+    }
     .btn-khampha {
         background: #00505f;
         padding: 10px 30px;
@@ -282,9 +284,13 @@ get_header(); ?>
             transform: translate(-50%);
         }
     }
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .box-info-1 {
+            gap: 0px !important;
+        }
+    }
 
-
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         #carouselExampleControls {
             height: 243px !important;
         }
@@ -307,6 +313,27 @@ get_header(); ?>
         .title {
             margin: 0 0 35px !important;
             font-size: 37px;
+        }
+        .box-item-best-sales{
+            margin: 5px !important
+        }
+        .item-facture{
+            width: 49%;
+            height: unset;
+            border: 1px solid;
+        }
+        .item-facture .image-wrapper{
+            height: unset;
+        }
+        .box-item-best-sales img{
+
+            height : 165px;
+        }
+        .box-comment{
+            margin: 0 !important;
+        }
+        .slider-item p{
+            width: 90%;
         }
     }
 
@@ -332,7 +359,7 @@ get_header(); ?>
         $products = wc_get_products($args);
         return $products;
     }
-    $list_facture = get_products_by_category_name();
+    $list_facture = get_products_by_category_name('san-pham-noi-bat');
     function get_image_from_library($image_name) {
         $args = array(
             'post_type' => 'attachment',
@@ -419,9 +446,10 @@ get_header(); ?>
                 $image_id = $product->get_image_id();
                 $image_url = wp_get_attachment_image_url($image_id, 'full');
                 $gallery_image_ids = $product->get_gallery_image_ids();
+            
                 $img_hover = esc_url($image_url??'');
-                if(!empty($gallery_image_ids) && count($gallery_image_ids) > 1 ){
-                    $img_hover = wp_get_attachment_image_url($gallery_image_ids[1], 'full');
+                if(!empty($gallery_image_ids) && count($gallery_image_ids) > 0 ){
+                    $img_hover = wp_get_attachment_image_url($gallery_image_ids[0], 'full');
                 }
                 ?>
                 <div class="col-sm-3 item-facture">
@@ -436,11 +464,12 @@ get_header(); ?>
             <?php }
         }
 
+
         ?>
 
     </div>
-    <div class="img-why" style=" margin-top: 40px;   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;">
-        <img style="width: 100%;height: 400px" src="<?php echo $image_url3 ?>" alt="">
+    <div class="img-why" style=" margin-top: 60px;   box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;">
+        <img style="width: 100%;max-height: 500px" src="<?php echo $image_url3 ?>" alt="">
     </div>
     <div class="mt-4">
         <div class="text-center title">
@@ -556,29 +585,29 @@ get_header(); ?>
                  <i style="padding-top: 16px; font-size: 5px" class='bx bxs-certification'></i>
         </div>
     </div>
+    
+    
+
+</div>
+
+<script >
+   $(()=>{
+       console.log('â');
+       $('.your-slider-class').slick({
+           slidesToShow: 1,
+           slidesToScroll: 1,
+           arrows: false,
+           autoplay: true,
+           autoplaySpeed: 1800,
+           pauseOnHover: true // Dừng khi rê chuột lên slider
+       });
+
+
+   })
+
+</script>
 
 
 
 
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-
-       $(()=>{
-
-
-           $('.your-slider-class').slick({
-               slidesToShow: 1,
-               slidesToScroll: 1,
-               arrows: false,
-               autoplay: true,
-               autoplaySpeed: 1800,
-               pauseOnHover: true // Dừng khi rê chuột lên slider
-           });
-
-
-       })
-
-    </script>
-
-    <?php get_footer(); ?>
+<?php get_footer(); ?>

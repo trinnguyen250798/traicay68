@@ -1,0 +1,180 @@
+@import url('https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+
+.box-header{
+    padding: 5px 20px;
+    border-bottom: 1px solid #828282;
+}
+.box-header .logo{
+    width: 255px;
+    max-height: 100px
+}
+.box-icon-left {
+   gap : 10px
+}
+.box-icon-left i{
+    font-size: 17px;
+    color: #7e7e7e;
+    padding: 3px;
+
+    border-radius: 5px;
+}
+.box-icon-left i:hover{
+    color: #070707;
+    background: #cbcbcb;
+}
+
+.box-icon-right {
+    gap : 10px
+}
+.box-icon-right i{
+    font-size: 17px;
+    color: #070707;
+    padding: 3px;
+    border-radius: 5px;
+}
+.box-icon-right i:hover{
+    color: #070707;
+    background: #cbcbcb;
+}
+.header-top {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #fff;
+    padding: 10px 0;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.menu-top {
+    list-style-type: none; /* Bỏ dấu chấm */
+    padding: 0;
+    display: flex;
+    justify-content: space-around; /* Cân chỉnh các item đều nhau */
+    margin: 0;
+}
+
+.item-menu-top {
+    padding: 10px 20px;
+}
+
+.item-menu-top a {
+    text-decoration: none;
+    color: #070707;
+    font-size: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.item-menu-top a:hover {
+    color: #0a98dc;
+}
+.icon_mb_menu {
+    display: none;
+}
+.box-top-main{
+    justify-content: center;
+}
+@media (max-width: 1024px) {
+    .menu-top, .box-icon-left ,.box-icon-right{
+        display: none !important;
+    }
+    .icon_mb_menu {
+        display: block;
+        color: #0a0a0a;
+    }
+    .box-top-main{
+        justify-content: space-between;
+    }
+}
+
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+a{
+    color: #070707;
+}
+a:hover{
+    text-decoration: none;
+
+}
+
+.menu-popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+}
+
+.menu-popup {
+    position: relative;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+  
+    padding: 20px;
+}
+
+.menu-popup-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.menu-popup-list li {
+    margin: 10px 0;
+}
+
+.menu-popup-list a {
+    text-decoration: none;
+    color: black;
+    font-size: 18px;
+}
+
+.close-menu {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.footer{
+    color: #070707;
+    font-size: 12px;
+    padding: 65px 70px;
+    border-top : 1px solid ;
+    text-transform: uppercase;
+}
+.btn-dk{
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid #00505f;
+    color: #00505f;
+}
+.btn-dk:hover{
+
+    background: #00505f;
+
+    color: white;
+}
+.bo-cong-thuong{
+  
+
+}
+.bo-cong-thuong img{
+   
+    width: 325px;
+    height: 58px;
+}
+.box-f-icon a{
+    margin-right: 5px;
+    padding: 12px;
+    border: 1px solid;
+    font-size: 20px;
+}
