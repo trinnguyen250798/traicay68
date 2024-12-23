@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='<?php echo get_template_directory_uri() ?>/css/style.css' rel='stylesheet'>
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
@@ -16,14 +17,14 @@ if ($custom_logo_id) {
 }
 ?>
 
-<header id="site-header" class="p-0">
+<header id="site-header" class="p-0 border-bottom">
     <!-- Nội dung header -->
     <div class="menu-popup-overlay">
         <div class="menu-popup " >
         <button onclick="close_menu()" class="close-menu">&times;</button>
             <ul class="menu-popup-list">
                 <li class="item-menu-top">
-                    <a href="">Bán Chạy</a>
+                    <a href="<?php echo home_url('/ban-chay'); ?>">Bán Chạy</a>
                 </li>
                 <li class="item-menu-top">
                     <a href="">Trái Cây nhập Khẩu</a>
@@ -68,7 +69,7 @@ if ($custom_logo_id) {
         </div>
         <ul class="menu-top">
             <li class="item-menu-top">
-                <a href="">Bán Chạy</a>
+                <a href="<?php echo home_url('/ban-chay'); ?>">Bán Chạy</a>
             </li>
             <li class="item-menu-top">
                 <a href="">Trái Cây nhập Khẩu</a>
@@ -89,12 +90,19 @@ if ($custom_logo_id) {
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     var header = $('#site-header');
-    var stickyPoint = header.offset().top; // Điểm cố định khi header bắt đầu cố định
+
     $(window).scroll(function() {
+        var stickyPoint = 10; // Điểm sticky của header
+        var header = $('header'); // Thay thế bằng selector của header bạn sử dụng
+
         if ($(window).scrollTop() >= stickyPoint) {
             header.addClass('header-top'); // Thêm class khi cuộn đến điểm sticky
+        } else {
+            // Thêm một hiệu ứng mượt mà khi xóa lớp
+            header.css('transition', 'all 0.3s ease-in-out');
+            header.removeClass('header-top'); // Xóa class khi cuộn về đầu trang
         }
-    });
+    })
     const open_menu = () => {
         $('.menu-popup-overlay').fadeIn();
     }

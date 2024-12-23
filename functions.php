@@ -18,7 +18,7 @@ function enqueue_theme_assets() {
     if (!wp_script_is('jquery', 'enqueued')) {
         wp_enqueue_script('jquery', 'https://code.jquery.com/jquery-3.6.0.min.js', array(), null, true);
     }
-    wp_enqueue_style('custom-style', get_template_directory_uri() . '/css/style.css');
+
 }
 add_action('wp_enqueue_scripts', 'enqueue_theme_assets');
 
@@ -32,3 +32,21 @@ function theme_setup() {
     ));
 }
 add_action('after_setup_theme', 'theme_setup');
+
+
+function get_products_by_category_name($category_name = 'san-pham-noi-bat') {
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => -1,
+        'status'         => 'publish',
+        'tax_query'      => array(
+            array(
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $category_name
+            )
+        )
+    );
+    $products = wc_get_products($args);
+    return $products;
+}
