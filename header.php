@@ -15,9 +15,16 @@ $custom_logo_id = get_theme_mod('custom_logo');
 if ($custom_logo_id) {
     $logo_url = wp_get_attachment_image_url($custom_logo_id, 'full');
 }
+
+global $post;
+if (isset($post)) {
+    $current_slug = $post->post_name; // Lấy slug hiện tại
+}
+
 ?>
 
-<header id="site-header" class="p-0 border-bottom">
+
+<header id="site-header" class="p-0 border-bottom bg-white">
     <!-- Nội dung header -->
     <div class="menu-popup-overlay">
         <div class="menu-popup " >
@@ -27,16 +34,16 @@ if ($custom_logo_id) {
                     <a href="<?php echo home_url('/ban-chay'); ?>">Bán Chạy</a>
                 </li>
                 <li class="item-menu-top">
-                    <a href="">Trái Cây nhập Khẩu</a>
-                </li>
-                <li class="item-menu-top">
-                    <a href="">Trái cây khô</a>
+                    <a href="<?php echo home_url('/trai-cay-tuoi-nhap-khau-kp68-fruit') ?>">Trái Cây nhập Khẩu</a>
                 </li>
                 <li class="item-menu-top">
                     <a href="">Giới thiệu</a>
                 </li>
                 <li class="item-menu-top">
                     <a href="">Khuyến mãi </a>
+                </li>
+                <li class="item-menu-top">
+                    <a href="">liên hệ</a>
                 </li>
             </ul>
            
@@ -68,20 +75,20 @@ if ($custom_logo_id) {
             </div>
         </div>
         <ul class="menu-top">
-            <li class="item-menu-top">
+            <li class="item-menu-top <?php echo $current_slug=='ban-chay'?'active':'' ?>">
                 <a href="<?php echo home_url('/ban-chay'); ?>">Bán Chạy</a>
             </li>
-            <li class="item-menu-top">
+            <li class="item-menu-top <?php echo $current_slug==''?'active':'' ?>">
                 <a href="">Trái Cây nhập Khẩu</a>
             </li>
-            <li class="item-menu-top">
-                <a href="">Trái cây khô</a>
+            <li class="item-menu-top <?php echo $current_slug=='trai-cay-tuoi-nhap-khau-kp68-fruit'?'active':'' ?>">
+                <a href="<?php echo home_url('/trai-cay-tuoi-nhap-khau-kp68-fruit') ?>">Giới thiệu</a>
             </li>
-            <li class="item-menu-top">
-                <a href="">Giới thiệu</a>
-            </li>
-            <li class="item-menu-top">
+            <li class="item-menu-top <?php echo $current_slug=='khuyen-mai'?'active':'' ?>">
                 <a href="">Khuyến mãi </a>
+            </li>
+            <li class="item-menu-top <?php echo $current_slug=='lien-he'?'active':'' ?>">
+                <a href="">liên hệ</a>
             </li>
         </ul>
     </div>
@@ -92,7 +99,7 @@ if ($custom_logo_id) {
     var header = $('#site-header');
 
     $(window).scroll(function() {
-        var stickyPoint = 10; // Điểm sticky của header
+        var stickyPoint = 2; // Điểm sticky của header
         var header = $('header'); // Thay thế bằng selector của header bạn sử dụng
 
         if ($(window).scrollTop() >= stickyPoint) {
