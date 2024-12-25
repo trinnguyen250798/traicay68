@@ -34,22 +34,22 @@ if (isset($post)) {
                     <a href="<?php echo home_url('/ban-chay'); ?>">Bán Chạy</a>
                 </li>
                 <li class="item-menu-top">
-                    <a href="<?php echo home_url('/trai-cay-tuoi-nhap-khau-kp68-fruit') ?>">Trái Cây nhập Khẩu</a>
+                    <a href="<?php echo home_url('/trai-cay-nhap-khau') ?>">Trái Cây nhập Khẩu</a>
                 </li>
                 <li class="item-menu-top">
-                    <a href="">Giới thiệu</a>
+                    <a href="<?php echo home_url('/trai-cay-tuoi-nhap-khau-kp68-fruit') ?>">Giới thiệu</a>
                 </li>
                 <li class="item-menu-top">
-                    <a href="">Khuyến mãi </a>
+                    <a href="<?php echo home_url('/khuyen-mai') ?>">Khuyến mãi </a>
                 </li>
                 <li class="item-menu-top">
-                    <a href="">liên hệ</a>
+                    <a href="<?php echo home_url('/lien-he') ?>">liên hệ</a>
                 </li>
             </ul>
            
         </div>
     </div>
-    <div class="container-fluid ">
+    <div class="container-fluid ">  
         <div class="row align-items-center box-header ">
             <div class="col-sm-3 box-icon-left">
                 <div class="d-flex justify-content-start ">
@@ -74,21 +74,22 @@ if (isset($post)) {
                 </div>
             </div>
         </div>
+
         <ul class="menu-top">
             <li class="item-menu-top <?php echo $current_slug=='ban-chay'?'active':'' ?>">
                 <a href="<?php echo home_url('/ban-chay'); ?>">Bán Chạy</a>
             </li>
-            <li class="item-menu-top <?php echo $current_slug==''?'active':'' ?>">
-                <a href="">Trái Cây nhập Khẩu</a>
+            <li class="item-menu-top <?php echo $current_slug=='trai-cay-nhap-khau'?'active':'' ?>">
+                <a href="<?php echo home_url('/trai-cay-nhap-khau') ?>">Trái Cây nhập Khẩu</a>
             </li>
             <li class="item-menu-top <?php echo $current_slug=='trai-cay-tuoi-nhap-khau-kp68-fruit'?'active':'' ?>">
                 <a href="<?php echo home_url('/trai-cay-tuoi-nhap-khau-kp68-fruit') ?>">Giới thiệu</a>
             </li>
             <li class="item-menu-top <?php echo $current_slug=='khuyen-mai'?'active':'' ?>">
-                <a href="">Khuyến mãi </a>
+                <a href="<?php echo home_url('/khuyen-mai') ?>">Khuyến mãi </a>
             </li>
             <li class="item-menu-top <?php echo $current_slug=='lien-he'?'active':'' ?>">
-                <a href="">liên hệ</a>
+                <a href="<?php echo home_url('/lien-he') ?>">liên hệ</a>
             </li>
         </ul>
     </div>
