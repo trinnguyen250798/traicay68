@@ -108,3 +108,18 @@ function get_product_by_slug($product_slug) {
 
     return null;
 }
+function find_matching_variation($product, $term_name) {
+    $term_name_lower = strtolower($term_name);
+    if (!$product->is_type('variable')) {
+        return false;
+    }
+    $variations = $product->get_available_variations();
+    foreach ($variations as $variation) {
+        foreach ($variation['attributes'] as $key => $value) {
+            if (strtolower($value) === $term_name_lower) {
+                return $variation;
+            }
+        }
+    }
+    return false;
+}
