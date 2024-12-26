@@ -63,3 +63,48 @@ function load_woocommerce_styles() {
 }
 add_action('wp_enqueue_scripts', 'load_woocommerce_styles');
 add_filter('woocommerce_enqueue_styles', '__return_true');
+
+function add_query_vars_filter($vars) {
+    $vars[] = 'ten_san_pham'; // Thêm biến 'ten_san_pham'
+    return $vars;
+}
+add_filter('query_vars', 'add_query_vars_filter');
+
+// Thêm quy tắc rewrite cho đường dẫn
+function custom_rewrite_rule() {
+    add_rewrite_rule(
+        '^san-pham/([^/]*)/?',
+        'index.php?pagename=san-pham&ten_san_pham=$matches[1]',
+        'top'
+    );
+}
+add_action('init', 'custom_rewrite_rule');
+
+
+/**
+ * Lấy thông tin sản phẩm từ cơ sở dữ liệu dựa trên slug sản phẩm.
+ *
+ * @param string $product_slug Slug của sản phẩm.
+ * @return object|null Thông tin sản phẩm hoặc null nếu không tìm thấy.
+ */
+function get_product_by_slug($product_slug) {
+    global $wpdb;
+    $product_slug = sanitize_title($product_slug);
+
+    if (empty($product_slug)) {
+        return null;
+    }
+
+    $product = $wpdb->get_row($wpdb->prepare("
+        SELECT * FROM {$wpdb->posts} 
+        WHERE post_type = 'product' 
+        AND post_status = 'publish' 
+        AND post_name = %s
+    ", $product_slug));
+
+    if ($product) {
+        return wc_get_product($product->ID); // Lấy chi tiết sản phẩm bằng WC_Functions
+    }
+
+    return null;
+}
