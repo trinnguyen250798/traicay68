@@ -31,12 +31,12 @@ get_header(); ?>
         margin-bottom: 30px
     }
     #carouselExampleControls {
-        height: 580px !important; /* Chiều cao cố định */
+        height: 458px !important; /* Chiều cao cố định */
     }
 
     .carousel-item img {
         height: 100% !important; /* Đảm bảo ảnh vừa vặn với chiều cao của carousel */
-        max-height: 580px;
+        max-height: 458px;
 
     }
     .box-info-1{
@@ -438,12 +438,14 @@ get_header(); ?>
                 }
                 ?>
                 <div class="col-sm-3 item-facture">
+                    <a href="<?php echo $product->get_permalink()  ?>">
                     <div class="image-wrapper mb-4">
                         <img class="default-img" src="<?php echo esc_url($image_url ?? '') ?>" alt="">
                         <img class="hover-img " src="<?php echo esc_url($img_hover ?? '') ?>" alt="">
                     </div>
                     <p><?php echo $product->get_name() ?> </p>
                     <p style="font-weight: 300; font-size: 12px"><?php echo $formatted_price ?? '' ?> đ</p>
+                    </a>
                 </div>
 
             <?php }

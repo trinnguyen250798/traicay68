@@ -53,6 +53,117 @@ function get_products_by_category_name($category_name = 'san-pham-noi-bat') {
     $products = wc_get_products($args);
     return $products;
 }
+
+// laasy san pham co phan trang
+function get_products_by_category_page($category_name = 'san-pham-noi-bat', $paged = 1, $posts_per_page = 20, $orderby = 'date', $order = 'DESC', $search = '', $min_price = 0, $max_price = 5000000) {
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => $posts_per_page,
+        'paged'          => $paged,
+        'post_status'    => 'publish',
+        'tax_query'      => array(
+            array(
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $category_name,
+            )
+        ),
+        'orderby'        => $orderby,
+        'order'          => $order
+    );
+
+    // Thêm điều kiện sắp xếp theo giá
+    if ($orderby === 'price') {
+        $args['meta_key'] = '_price';
+        $args['orderby'] = 'meta_value_num';
+    }
+
+    if ($orderby === 'price-desc') {
+        $args['meta_key'] = 'price';
+        $args['orderby'] = 'meta_value_num';
+        $args['order'] = 'DESC';
+    }
+
+    // Lọc sản phẩm theo khoảng giá
+    if ($min_price != 0 || $max_price != 5000000) { // Đảm bảo không phải giá mặc định
+        $min_price = intval($min_price);
+        $max_price = intval($max_price);
+        $args['meta_query'] = array(
+            array(
+                'key'     => '_price',
+                'value'   => array($min_price, $max_price),
+                'compare' => 'BETWEEN',
+                'type'    => 'NUMERIC'
+            )
+        );
+
+    }
+
+
+    // Thêm tìm kiếm theo tên sản phẩm
+    if (!empty($search)) {
+        $args['s'] = $search;
+    }
+    $query = new WP_Query($args);
+//    $query = wc_get_products($args);
+
+    return $query;
+}
+function numrow_products_by_category_page($category_name = 'san-pham-noi-bat', $paged = 1, $posts_per_page = 20, $orderby = 'date', $order = 'DESC', $search = '', $min_price = 0, $max_price = 5000000) {
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => $posts_per_page,
+        'paged'          => $paged,
+        'post_status'    => 'publish',
+        'tax_query'      => array(
+            array(
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $category_name,
+            )
+        ),
+        'orderby'        => $orderby,
+        'order'          => $order
+    );
+
+    // Thêm điều kiện sắp xếp theo giá
+    if ($orderby === 'price') {
+        $args['meta_key'] = '_price';
+        $args['orderby'] = 'meta_value_num';
+    }
+
+    if ($orderby === 'price-desc') {
+        $args['meta_key'] = 'price';
+        $args['orderby'] = 'meta_value_num';
+        $args['order'] = 'DESC';
+    }
+
+    // Lọc sản phẩm theo khoảng giá
+    if ($min_price != 0 || $max_price != 5000000) { // Đảm bảo không phải giá mặc định
+        $min_price = intval($min_price);
+        $max_price = intval($max_price);
+        $args['price'] = array(
+            array(
+                'key'     => '_price',
+                'value'   => array($min_price, $max_price),
+                'compare' => 'BETWEEN',
+                'type'    => 'NUMERIC'
+            )
+        );
+
+    }
+
+
+    // Thêm tìm kiếm theo tên sản phẩm
+    if (!empty($search)) {
+        $args['s'] = $search;
+    }
+//    $query = new WP_Query($args);
+    $query = wc_get_products($args);
+
+    return $query;
+}
+
 // Load WooCommerce styles
 function load_woocommerce_styles() {
     if (class_exists('WooCommerce')) {
@@ -61,6 +172,13 @@ function load_woocommerce_styles() {
         wp_enqueue_style('woocommerce-smallscreen');
     }
 }
+function get_pagination_info($total_products, $posts_per_page, $paged) {
+    $start = ($paged - 1) * $posts_per_page + 1;
+    $end = min($total_products, $paged * $posts_per_page);
+
+    return "Hiển thị $start – $end của $total_products kết quả";
+}
+
 add_action('wp_enqueue_scripts', 'load_woocommerce_styles');
 add_filter('woocommerce_enqueue_styles', '__return_true');
 
@@ -123,3 +241,88 @@ function find_matching_variation($product, $term_name) {
     }
     return false;
 }
+function get_random_products($count = 4) {
+    $args = array(
+        'post_type'      => 'product',
+        'posts_per_page' => $count,
+        'orderby'        => 'rand', // Lấy ngẫu nhiên
+        'post_status'    => 'publish', // Chỉ lấy sản phẩm đã xuất bản
+    );
+
+    // Truy vấn sản phẩm
+    $products = wc_get_products($args);
+    return $products;
+}
+add_action('wp_ajax_add_to_cart', 'ajax_add_to_cart');
+add_action('wp_ajax_nopriv_add_to_cart', 'ajax_add_to_cart');
+
+function ajax_add_to_cart() {
+    $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
+    $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
+
+    if ($product_id > 0 && WC()->cart->add_to_cart($product_id, $quantity)) {
+        wp_send_json_success(array('message' => 'Sản phẩm đã được thêm vào giỏ hàng!'));
+    } else {
+        wp_send_json_error(array('message' => 'Không thể thêm sản phẩm.'));
+    }
+
+    wp_die();
+}
+function ajax_get_cart() {
+    $cart_items = WC()->cart->get_cart();
+    if ($cart_items) {
+        $total = WC()->cart->subtotal;
+        $total_formatted = number_format((float)$total, 2, ',', '.');
+        $cart_html = '';
+
+        foreach ($cart_items as $cart_item_key => $cart_item) {
+            $cart_item_data = $cart_item['data'];
+            $product_id = $cart_item['product_id'];
+            $product_name = $cart_item_data->get_name();
+            $product_quantity = $cart_item['quantity'];
+            $product_price = $cart_item_data->get_price_html();
+            $product_image = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'thumbnail');
+
+            // Xóa sản phẩm
+            $cart_html .= '<div class="item-cart">';
+            $cart_html .= '<a href="javascript:void(0)" onclick="remove_item_cart(\'' . $cart_item_key . '\')"><i class="bx bx-x"></i></a>';
+            $cart_html .= "<img src='" . $product_image[0] . "' />";
+            $cart_html .= "<div>
+                            <p class='font-weight-bolder'>$product_name</p>
+                            <p>$product_quantity <i class='bx bx-x'></i> $product_price</p>
+                          </div>";
+            $cart_html .= '</div>';
+        }
+
+        // Thêm subtotal
+        $cart_html .= '<div class="d-flex mt-4 justify-content-between">';
+        $cart_html .= '<p>TẠM TÍNH</p>';
+        $cart_html .= '<p class="font-weight-bolder">' . wc_price($total) . '</p>';
+        $cart_html .= '</div>';
+    } else {
+        $cart_html = '<p>Giỏ hàng trống</p>';
+    }
+
+    echo $cart_html;
+    wp_die();
+}
+
+add_action('wp_ajax_get_cart', 'ajax_get_cart');
+add_action('wp_ajax_nopriv_get_cart', 'ajax_get_cart');
+function ajax_remove_item_cart() {
+    $cart_item_key = isset($_POST['cart_item_key']) ? $_POST['cart_item_key'] : '';
+    $res = 0;
+    if ( !empty($cart_item_key) ) {
+        WC()->cart->remove_cart_item($cart_item_key); // Xóa sản phẩm khỏi giỏ hàng
+        WC()->cart->calculate_totals(); // Tính toán lại tổng giá trị giỏ hàng
+        $res = 1;
+    }
+    echo json_encode(array(
+        'statusCode' => 200 ,
+        'data' => $res,
+    ));
+    wp_die();
+}
+add_action('wp_ajax_remove_item_cart', 'ajax_remove_item_cart');
+add_action('wp_ajax_nopriv_remove_item_cart', 'ajax_remove_item_cart');
+

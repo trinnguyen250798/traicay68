@@ -134,6 +134,7 @@ $list_best_seller = get_products_by_category_name('san-pham-ban-chay');
 
 
     @media (max-width: 1024px) {
+
         .box-item-best-sales {
             gap: 4px;
         }
@@ -162,8 +163,8 @@ $list_best_seller = get_products_by_category_name('san-pham-ban-chay');
 
             height : 165px;
         }
-    }
 
+    }
 
 </style>
 <div id="fb-root"></div>
@@ -177,7 +178,9 @@ $list_best_seller = get_products_by_category_name('san-pham-ban-chay');
         <?php
         if(!empty($list_best_seller)){
             foreach ($list_best_seller as $product ){
-                $formatted_price = number_format($product->get_price(), 0, '.', ',');
+                if(!empty($product->get_price())){
+                    $formatted_price = number_format($product->get_price(), 0, '.', ',');
+                }
                 $image_id = $product->get_image_id();
                 $image_url = wp_get_attachment_image_url($image_id, 'full');
                 $gallery_image_ids = $product->get_gallery_image_ids();
@@ -188,12 +191,14 @@ $list_best_seller = get_products_by_category_name('san-pham-ban-chay');
                 }
                 ?>
                 <div class="col-sm-3 item-facture border">
-                    <div class="image-wrapper mb-4">
-                        <img class="default-img" src="<?php echo esc_url($image_url ?? '') ?>" alt="">
-                        <img class="hover-img " src="<?php echo esc_url($img_hover ?? '') ?>" alt="">
-                    </div>
-                    <p><?php echo $product->get_name() ?> </p>
-                    <p style="font-weight: 300; font-size: 12px"><?php echo $formatted_price ?? '' ?> đ</p>
+                    <a href="<?php echo $product->get_permalink()  ?>">
+                        <div class="image-wrapper mb-4">
+                            <img class="default-img" src="<?php echo esc_url($image_url ?? '') ?>" alt="">
+                            <img class="hover-img " src="<?php echo esc_url($img_hover ?? '') ?>" alt="">
+                        </div>
+                        <p><?php echo $product->get_name() ?> </p>
+                        <p style="font-weight: 300; font-size: 12px"><?php echo $formatted_price ?? '' ?> đ</p>
+                    </a>
                 </div>
 
 

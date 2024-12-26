@@ -1,7 +1,7 @@
 <div class="row footer m-0 bg-white">
     <div class="col-sm-4">
         <p style="font-size: 16px;font-weight: 500;">  cập nhật những thông tin mới nhất từ chúng tôi</p>
-        <input style="width: 50%;height: 40px;padding: 15px;border-radius: 0px;border: 1px solid;" clas="form-control" placeholder="Nhập email" type="text">
+        <input  class=" form-control" placeholder="Nhập email" type="email">
         <br><button class="btn-dk">Đăng ký</button>
 
       

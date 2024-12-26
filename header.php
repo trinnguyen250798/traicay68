@@ -3,7 +3,8 @@
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href='<?php echo get_template_directory_uri() ?>/css/style.css' rel='stylesheet'>
     <?php wp_head(); ?>
@@ -49,6 +50,13 @@ if (isset($post)) {
            
         </div>
     </div>
+    <div class="cart-popup-overlay"></div>
+    <div class="cart-popup">
+        <button onclick="close_cart()" class="close-menu">&times;</button>
+        <p class="mt-2">Giỏ hàng</p>
+        <hr>
+        <div class="content-cart"></div>
+    </div>
     <div class="container-fluid ">  
         <div class="row align-items-center box-header ">
             <div class="col-sm-3 box-icon-left">
@@ -62,7 +70,7 @@ if (isset($post)) {
                 <div class="d-flex box-top-main  align-items-center">
                     <a class="icon_mb_menu " href="javascript:void(0)" onclick="open_menu()"><i class='bx bx-menu'></i></a>
                     <a href="<?php echo home_url(); ?>"><img class="logo" src="<?php echo $logo_url ?>" alt=""></a>
-                    <a class="icon_mb_menu " href="javascript:void(0)"><i class="bx bx-shopping-bag"></i></a>
+                    <a class="icon_mb_menu " onclick="open_cart()" href="javascript:void(0)"><i class="bx bx-shopping-bag"></i></a>
                 </div>
             </div>
             <div class="col-sm-3 box-icon-right">
@@ -70,7 +78,8 @@ if (isset($post)) {
                     <i class='bx bx-user' ></i>
                     <i class='bx bx-search' ></i>
                     <i class='bx bx-heart' ></i>
-                    <i class='bx bx-shopping-bag'></i>
+                    <a href="javascript:void(0)" onclick="open_cart()"> <i class='bx bx-shopping-bag'></i></a>
+
                 </div>
             </div>
         </div>
@@ -100,6 +109,7 @@ if (isset($post)) {
     var header = $('#site-header');
 
     $(window).scroll(function() {
+
         var stickyPoint = 2; // Điểm sticky của header
         var header = $('header'); // Thay thế bằng selector của header bạn sử dụng
 
@@ -116,6 +126,70 @@ if (isset($post)) {
     }
     const close_menu = () => {
         $('.menu-popup-overlay').fadeOut();
+    }
+    function open_cart() {
+        $(`.content-cart`).html(`<div class="d-flex justify-content-center"><i class='bx bx-loader-alt bx-spin bx-flip-horizontal' ></i></div>`)
+        $('.cart-popup-overlay').fadeIn();
+        $('.cart-popup').addClass('open top');
+        $.ajax({
+            url: wc_add_to_cart_params.ajax_url, // URL của WooCommerce AJAX
+            type: 'POST',
+            data: {
+                action: 'get_cart',
+            },
+            success: function(response) {
+                $(`.content-cart`).html(response)
+            }
+        });
+
+    }
+
+    // Đóng popup cart
+    function close_cart() {
+        $('.cart-popup-overlay').fadeOut();
+        $('.cart-popup').removeClass('open top');
+    }
+    $(document).on('click', '.cart-popup-overlay', function() {
+        close_cart();
+    });
+    const remove_item_cart = (cart_item_key) => {
+
+        $.ajax({
+            url: wc_add_to_cart_params.ajax_url, // URL của WooCommerce AJAX
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                action: 'remove_item_cart',
+                cart_item_key : cart_item_key
+            },
+            success: function(response) {
+                if (response.statusCode == 200) {
+                    if (response.data == 1){
+                        open_cart();
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Xóa thành công',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    }else{
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Xóa thất bại',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    }
+                }
+
+            }
+        });
     }
 </script>
 <?php wp_footer(); ?>
