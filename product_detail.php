@@ -470,7 +470,6 @@ $product = get_product_by_slug($slug_san_pham);
                         <div class="btn-adad-card">
                             Thêm vào giỏ hàng
                         </div>
-
                     </a>
 
 

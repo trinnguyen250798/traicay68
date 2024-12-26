@@ -299,6 +299,9 @@ function ajax_get_cart() {
         $cart_html .= '<p>TẠM TÍNH</p>';
         $cart_html .= '<p class="font-weight-bolder">' . wc_price($total) . '</p>';
         $cart_html .= '</div>';
+        $cart_html .= '<button type="button" class="btn btn-sm btn-primary btn-lg btn-block">Xem  giỏ hàng</button>
+                       <button type="button" class="btn btn-sm btn-secondary btn-lg btn-block">Thanh toán</button>';
+
     } else {
         $cart_html = '<p>Giỏ hàng trống</p>';
     }

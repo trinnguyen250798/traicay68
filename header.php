@@ -153,7 +153,7 @@ if (isset($post)) {
         close_cart();
     });
     const remove_item_cart = (cart_item_key) => {
-
+        $(`.content-cart`).html(`<div class="d-flex justify-content-center"><i class='bx bx-loader-alt bx-spin bx-flip-horizontal' ></i></div>`)
         $.ajax({
             url: wc_add_to_cart_params.ajax_url, // URL của WooCommerce AJAX
             type: 'POST',
@@ -164,8 +164,8 @@ if (isset($post)) {
             },
             success: function(response) {
                 if (response.statusCode == 200) {
+                    open_cart();
                     if (response.data == 1){
-                        open_cart();
                         Swal.fire({
                             toast: true,
                             position: 'top-end',
