@@ -299,8 +299,8 @@ function ajax_get_cart() {
         $cart_html .= '<p>TẠM TÍNH</p>';
         $cart_html .= '<p class="font-weight-bolder">' . wc_price($total) . '</p>';
         $cart_html .= '</div>';
-        $cart_html .= '<button type="button" class="btn btn-sm btn-primary btn-lg btn-block">Xem  giỏ hàng</button>
-                       <button type="button" class="btn btn-sm btn-secondary btn-lg btn-block">Thanh toán</button>';
+        $cart_html .= '<a style="color: white!important;" href="'.home_url('/gio-hang').'" class="btn btn-sm btn-primary btn-lg btn-block">Xem  giỏ hàng</a>
+                       <a style="color: white!important;" href="'.home_url('/thanh-toan').'" class="btn btn-sm btn-secondary btn-lg btn-block">Thanh toán</a>';
 
     } else {
         $cart_html = '<p>Giỏ hàng trống</p>';
@@ -355,3 +355,68 @@ function ajax_update_cart_item_quantity() {
 }
 add_action('wp_ajax_update_cart_quantity', 'ajax_update_cart_item_quantity');
 add_action('wp_ajax_nopriv_update_cart_quantity', 'ajax_update_cart_item_quantity');
+
+
+function get_provinces_from_api() {
+    $url = 'https://provinces.open-api.vn/api/';
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        echo 'Error: ' . curl_error($ch);
+    } else {
+        $data = json_decode($response, true);
+        return $data;
+    }
+    curl_close($ch);
+}
+function get_districts_from_city() {
+    // URL của API cho tỉnh/thành phố
+    $url = "https://esgoo.net/api-tinhthanh/1/0.htm";
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+
+    // Kiểm tra lỗi cURL
+    if (curl_errno($ch)) {
+        echo 'Error: ' . curl_error($ch);
+    } else {
+        $data = json_decode($response, true);  // Decode JSON
+        return $data;
+    }
+
+    curl_close($ch);
+}
+function get_wards_from_district($citi_id) {
+    if($citi_id < 10){
+        $citi_id = '0'.$citi_id;
+    }
+    // URL của API cho quận/huyện
+    $url = "https://esgoo.net/api-tinhthanh/2/$citi_id.htm";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+
+    // Kiểm tra lỗi cURL
+    if (curl_errno($ch)) {
+        echo 'Error: ' . curl_error($ch);
+    } else {
+        $data = json_decode($response, true);  // Decode JSON
+        return $data;
+    }
+
+    curl_close($ch);
+}
+
+function enqueue_select2_scripts() {
+    // Thêm CSS của Select2
+    wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css', array(), '4.1.0' );
+
+    // Thêm JavaScript của Select2
+    wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js', array('jquery'), '4.1.0', true );
+
+    // Tùy chỉnh Select2 nếu cần
+    wp_enqueue_script( 'custom-select2-js', get_template_directory_uri() . '/js/custom-select2.js', array('jquery', 'select2-js'), null, true );
+}
+add_action( 'wp_enqueue_scripts', 'enqueue_select2_scripts' );

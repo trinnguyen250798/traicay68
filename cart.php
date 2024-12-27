@@ -51,9 +51,37 @@ get_header();
     .table td {
         vertical-align: middle;
     }
+    .table  th {
+        font-weight: 500;
+        font-size: 11px;
+        line-height: 15px;
+        letter-spacing: 0.0625em;
+        text-transform: uppercase;
+        color: #838383;
+        text-align: left;
+        border-top : 0px;
+    }
+    .box-price{
+        font-family: monospace !important;
+        border: 1px solid #777777;
+        padding: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 30px;
+        letter-spacing: 2px;
+    }
+    .btn-thanhtoan{
+        text-align: center;
+        background: rgb(0, 80, 94);
+        color: white !important;
+        padding: 10px;
+        margin-top: 20px;
+    }
 </style>
 <?php
 $list_cart  = WC()->cart->get_cart();
+$total = WC()->cart->subtotal;
+$total_formatted = number_format((float)$total, 0, ',', '.');
 ?>
 <div class="container">
     <div class="title">
@@ -65,7 +93,7 @@ $list_cart  = WC()->cart->get_cart();
             <div class="table-responsive">
                 <table class="table">
                     <thead>
-                    <tr>
+                    <tr >
                         <th scope="col">Sản phẩm</th>
                         <th scope="col">Số lượng</th>
                         <th scope="col">Tạm tính</th>
@@ -83,7 +111,7 @@ $list_cart  = WC()->cart->get_cart();
                             $product_id = $v['product_id'];
                             $product_image = wp_get_attachment_image_src(get_post_thumbnail_id($product_id), 'thumbnail');
                             ?>
-                            <tr>
+                            <tr >
                                 <td>
                                     <div class="item-cart mb-0" >
                                         <a href="javascript:void(0)" onclick="delete_item_cart('<?php echo $k ?>')"><i class="bx bx-x"></i></a>
@@ -124,7 +152,16 @@ $list_cart  = WC()->cart->get_cart();
 
         </div>
         <div class="col-sm-4">
+            <div class="box-price">
+                <div class="d-flex border-bottom  justify-content-between tamtinh">
+                    <p> TẠM TÍNH </p><p><?php echo $total_formatted ?>₫</p>
+                </div>
 
+                <div class="d-flex mt-3 border-bottom  justify-content-between tamtinh">
+                    <p>TỔNG </p><p style="font-weight: bolder; font-size: 20px"><?php echo $total_formatted ?>₫</p>
+                </div>
+                <a href="<?php echo home_url('thanh-toan') ?>" class="btn-block btn-thanhtoan">THANH TOÁN</a>
+            </div>
         </div>
     </div>
 </div>
