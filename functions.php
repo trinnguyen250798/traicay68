@@ -320,12 +320,38 @@ function ajax_remove_item_cart() {
         WC()->cart->calculate_totals(); // Tính toán lại tổng giá trị giỏ hàng
         $res = 1;
     }
-    echo json_encode(array(
-        'statusCode' => 200 ,
+    wp_send_json([
+        'statusCode' => 200,
         'data' => $res,
-    ));
+    ]);
     wp_die();
 }
 add_action('wp_ajax_remove_item_cart', 'ajax_remove_item_cart');
 add_action('wp_ajax_nopriv_remove_item_cart', 'ajax_remove_item_cart');
 
+
+function format_money($amount) {
+    return number_format($amount, 0, ',', '.');
+}
+
+
+
+function ajax_update_cart_item_quantity() {
+    $cart_item_key = isset($_POST['cart_item_key']) ? sanitize_text_field($_POST['cart_item_key']) : '';
+    $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
+    if (isset(WC()->cart)) {
+        WC()->cart->set_quantity($cart_item_key, $quantity, true);
+        wp_send_json([
+            'statusCode' => 200,
+            'message' => 'Cập nhật số lượng thành công.',
+            'data' => 1,
+        ]);
+    }
+    wp_send_json([
+        'statusCode' => 200,
+        'data' => 0,
+    ]);
+    wp_die();
+}
+add_action('wp_ajax_update_cart_quantity', 'ajax_update_cart_item_quantity');
+add_action('wp_ajax_nopriv_update_cart_quantity', 'ajax_update_cart_item_quantity');
