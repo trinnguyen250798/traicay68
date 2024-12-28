@@ -384,30 +384,61 @@ function get_districts_from_city() {
     } else {
         $data = json_decode($response, true);  // Decode JSON
         return $data;
+
     }
 
     curl_close($ch);
 }
-function get_wards_from_district($citi_id) {
-    if($citi_id < 10){
-        $citi_id = '0'.$citi_id;
+function ajax_get_district_from_city() {
+    if (!isset($_POST['citi_id'])) {
+        wp_send_json_error(['message' => 'Thành phố không hợp lệ']);
+        return;
     }
-    // URL của API cho quận/huyện
+    $citi_id = intval($_POST['citi_id']);
+    if ($citi_id < 10) {
+        $citi_id = '0' . $citi_id;
+    }
     $url = "https://esgoo.net/api-tinhthanh/2/$citi_id.htm";
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
-
-    // Kiểm tra lỗi cURL
     if (curl_errno($ch)) {
-        echo 'Error: ' . curl_error($ch);
+        wp_send_json_error(['message' => 'Lỗi cURL: ' . curl_error($ch)]);
     } else {
-        $data = json_decode($response, true);  // Decode JSON
-        return $data;
+        $data = json_decode($response, true);
+        wp_send_json_success($data);
     }
-
     curl_close($ch);
 }
+add_action('wp_ajax_get_district_from_city', 'ajax_get_district_from_city');
+add_action('wp_ajax_nopriv_get_district_from_city', 'ajax_get_district_from_city');
+
+function ajax_get_ward_from_district() {
+    if (!isset($_POST['district_id'])) {
+        wp_send_json_error(['message' => 'Quận/Huyện không hợp lệ']);
+        return;
+    }
+    $district = intval($_POST['district_id']);
+    if ($district < 10) {
+        $district = '00' . $district;
+    }
+    if ($district >= 10 && $district <100) {
+        $district = '0' . $district;
+    }
+    $url = "https://esgoo.net/api-tinhthanh/3/$district.htm";
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    if (curl_errno($ch)) {
+        wp_send_json_error(['message' => 'Lỗi cURL: ' . curl_error($ch)]);
+    } else {
+        $data = json_decode($response, true);
+        wp_send_json_success($data);
+    }
+    curl_close($ch);
+}
+add_action('wp_ajax_get_ward_from_district', 'ajax_get_ward_from_district');
+add_action('wp_ajax_nopriv_get_ward_from_district', 'ajax_get_ward_from_district');
 
 function enqueue_select2_scripts() {
     // Thêm CSS của Select2
@@ -420,3 +451,102 @@ function enqueue_select2_scripts() {
     wp_enqueue_script( 'custom-select2-js', get_template_directory_uri() . '/js/custom-select2.js', array('jquery', 'select2-js'), null, true );
 }
 add_action( 'wp_enqueue_scripts', 'enqueue_select2_scripts' );
+
+
+
+
+function custom_checkout_handler() {
+    if( !isset($_POST['action']) || $_POST['action'] != 'custom_checkout' ) {
+        wp_send_json_error( array( 'message' => 'Invalid request' ) );
+        wp_die();
+    }
+
+    $fullname = sanitize_text_field( $_POST['fullname'] );
+    $telephone = sanitize_text_field( $_POST['telephone'] );
+    $email = sanitize_email( $_POST['email'] );
+    $city = sanitize_text_field( $_POST['city'] );
+    $district = sanitize_text_field( $_POST['district'] );
+    $ward = sanitize_text_field( $_POST['ward'] );
+    $address = sanitize_textarea_field( $_POST['address'] );
+    $note = sanitize_textarea_field( $_POST['note'] );
+
+    // Tạo đơn hàng
+    $order_data = array(
+        'post_title'    => $fullname,
+        'post_status'   => 'pending',
+        'post_type'     => 'shop_order_placehold',
+    );
+    $order_id = wp_insert_post( $order_data );
+
+    error_log('Order ID created: ' . $order_id);
+    if ( is_wp_error($order_id) ) {
+        wp_send_json_error( array( 'message' => 'Có lỗi xảy ra khi tạo đơn hàng!' ) );
+        wp_die();
+    }
+
+    // Kiểm tra đơn hàng đã được tạo hay chưa
+    if (!is_wp_error($order_id)) {
+        // Lưu thông tin chi tiết vào meta
+        update_post_meta($order_id, '_billing_telephone', $telephone);
+        update_post_meta($order_id, '_billing_email', $email);
+        update_post_meta($order_id, '_billing_city', $city);
+        update_post_meta($order_id, '_billing_district', $district);
+        update_post_meta($order_id, '_billing_ward', $ward);
+        update_post_meta($order_id, '_billing_address_1', $address);
+        update_post_meta($order_id, '_order_notes', $note);
+
+        // Cập nhật trạng thái đơn hàng
+        wp_update_post(array('ID' => $order_id, 'post_status' => 'wc-processing'));
+    } else {
+        wp_send_json_error(array('message' => 'Có lỗi xảy ra khi tạo đơn hàng!'));
+    }
+
+    wp_send_json_success( array('order_id' => $order_id , 'message' => 'Đặt hàng thành công!' ) );
+    wp_die();
+}
+add_action( 'wp_ajax_custom_checkout', 'custom_checkout_handler' );
+add_action( 'wp_ajax_nopriv_custom_checkout', 'custom_checkout_handler' );
+
+
+function custom_order_with_wc() {
+    // Kiểm tra yêu cầu
+    if( !isset($_POST['action']) || $_POST['action'] != 'create_custom_order_with_wc' ) {
+        wp_send_json_error( array( 'message' => 'Invalid request' ) );
+        wp_die();
+    }
+
+    // Sanitize dữ liệu từ form
+    $fullname = sanitize_text_field( $_POST['fullname'] );
+    $telephone = sanitize_text_field( $_POST['telephone'] );
+    $email = sanitize_email( $_POST['email'] );
+    $city = sanitize_text_field( $_POST['city'] );
+    $district = sanitize_text_field( $_POST['district'] );
+    $ward = sanitize_text_field( $_POST['ward'] );
+    $address = sanitize_textarea_field( $_POST['address'] );
+    $note = sanitize_textarea_field( $_POST['note'] );
+
+    // Tạo mới một đơn hàng
+    $order = wc_create_order();
+    $order->set_customer_id( get_current_user_id() ); // Nếu muốn gắn với người dùng đã đăng nhập
+
+    // Cập nhật thông tin thanh toán
+    $order->set_billing_first_name( $fullname );
+    $order->set_billing_phone( $telephone );
+    $order->set_billing_email( $email );
+    $order->set_billing_city( $city );
+    $order->set_billing_address_1( $address );
+    $order->set_billing_postcode( $ward );
+    $order->set_customer_note( $note );
+
+    // Lưu đơn hàng
+    $order->save();
+
+    // Đặt trạng thái đơn hàng
+    $order->set_status( 'wc-processing' );
+    $order->save();
+
+    wp_send_json_success( array('order_id' => $order->get_id(), 'message' => 'Đặt hàng thành công!' ) );
+    wp_die();
+}
+add_action( 'wp_ajax_custom_order_with_wc', 'custom_order_with_wc' );
+add_action( 'wp_ajax_nopriv_custom_order_with_wc', 'custom_order_with_wc' );

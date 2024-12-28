@@ -382,8 +382,35 @@ $slug_san_pham = get_query_var('ten_san_pham');
 // Gọi hàm để lấy thông tin sản phẩm
 $product = get_product_by_slug($slug_san_pham);
 
+$args = array(
+    'post_type'      => 'shop_order',
+    'post_status'    => 'any',
+    'posts_per_page' => -1,
+);
 
+$query = new WP_Query($args);
 
+if ($query->have_posts()) :
+    while ($query->have_posts()) : $query->the_post();
+
+        $order_id = get_the_ID();
+        $order = wc_get_order($order_id);
+
+        if ($order) {
+            echo 'Order ID: ' . $order->get_id() . '<br>';
+            echo 'Customer Name: ' . $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() . '<br>';
+            echo 'Phone: ' . $order->get_billing_telephone() . '<br>';
+            echo 'Email: ' . $order->get_billing_email() . '<br>';
+            echo 'Address: ' . $order->get_billing_address_1() . ', ' . $order->get_billing_city() . ', ' . $order->get_billing_district() . ', ' . $order->get_billing_ward() . '<br>';
+            echo 'Notes: ' . $order->get_meta('_order_notes') . '<br>';
+        } else {
+            echo 'Không thể lấy thông tin chi tiết đơn hàng!';
+        }
+    endwhile;
+    wp_reset_postdata();
+else :
+    echo 'Không có đơn hàng nào.';
+endif;
 ?>
 <div class="product-detail row">
     <?php

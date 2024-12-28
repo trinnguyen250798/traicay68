@@ -76,6 +76,7 @@ get_header();
         color: white !important;
         padding: 10px;
         margin-top: 20px;
+
     }
 </style>
 <?php
