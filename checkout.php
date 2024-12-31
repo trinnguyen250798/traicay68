@@ -91,7 +91,7 @@ $total = WC()->cart->subtotal;
 
 
 ?>
-<div class="container">
+<div class="container mb-4">
     <p class="title-checkout">THANH TOÁN</p>
     <div class="row mt-4">
         <div class="col-sm-6">
@@ -181,7 +181,7 @@ $total = WC()->cart->subtotal;
                     </div>
                 </div>
                 <p class="dieu-khoan">Dữ liệu sẽ được sử dụng để hỗ trợ cải thiện trải nghiêm và các mục đích theo chính sách bảo mật được mô tả ở
-                    <a  href="<?php echo home_url('dieu-khoan') ?>"> Chính sách bảo mật</a>.</p>
+                    <a  href="<?php echo home_url('/chinh-sach-bao-mat') ?>"> Chính sách bảo mật</a>.</p>
                 <div class="d-flex  align-items-center check_dieu-khoan" style=" gap: 10px">
                     <input type="checkbox"  id="checkbox_dieu_khoan">
                     <label class="mb-0" for="checkbox_dieu_khoan">Tôi đã đọc và đồng ý với <a href="<?php echo home_url('dieu-khoan') ?>">Điều khoản & Điều kiện</a> của website *</label>
@@ -296,33 +296,39 @@ $total = WC()->cart->subtotal;
             noti("Vui lòng chấp nhận Điều khoản & Điều kiện ");
             return ;
         }
+
+        const city_name = $('.city option:selected').text();
+        const district_name = $('.district option:selected').text();
+        const ward_name = $('.ward option:selected').text();
+        const address_arr = {
+            first_name:fullname,
+            email: email,
+            phone: telephone,
+            address_1:address,
+            city: city_name,
+            state: district_name,
+            ward: ward_name,
+            country:'Việt Nam'
+        };
         $.ajax({
-            url: wc_add_to_cart_params.ajax_url, // URL của WooCommerce AJAX
-            type: 'POST',
+            url: wc_checkout_params.ajax_url,
+            method: 'POST',
             data: {
-                action: 'custom_order_with_wc',
-                fullname: fullname,
-                telephone: telephone,
-                email: email,
-                city: city,
-                district: district,
-                ward: ward,
-                address: address,
-                note: note
+                action: 'create_guest_order',
+                address: address_arr
             },
             beforeSend: function() {
                 event.target.innerHTML = `<i class='bx bx-loader bx-spin bx-rotate-90' ></i>`;
             },
-            success: function(response) {
-                if (response.success) {
-                    noti("Đặt hàng thành công!");
-                    // Thực hiện redirect hoặc xử lý sau khi đặt hàng thành công
+            success: function (response) {
+                if (response.data.statusCode == 200) {
+                    window.location.href = '<?php echo home_url('/thanks') ?>';
                 } else {
-                    noti(response.data); // Hiển thị thông báo lỗi từ response
+                    alert('Đã xảy ra lỗi: ' + response.message);
                 }
             },
-            error: function(xhr, status, error) {
-                console.error('AJAX Error:', status, error);
+            error: function () {
+                alert('Đã xảy ra lỗi trong quá trình gửi yêu cầu.');
             }
         });
     }

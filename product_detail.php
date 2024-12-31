@@ -381,36 +381,6 @@ $slug_san_pham = get_query_var('ten_san_pham');
 
 // Gọi hàm để lấy thông tin sản phẩm
 $product = get_product_by_slug($slug_san_pham);
-
-$args = array(
-    'post_type'      => 'shop_order',
-    'post_status'    => 'any',
-    'posts_per_page' => -1,
-);
-
-$query = new WP_Query($args);
-
-if ($query->have_posts()) :
-    while ($query->have_posts()) : $query->the_post();
-
-        $order_id = get_the_ID();
-        $order = wc_get_order($order_id);
-
-        if ($order) {
-            echo 'Order ID: ' . $order->get_id() . '<br>';
-            echo 'Customer Name: ' . $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() . '<br>';
-            echo 'Phone: ' . $order->get_billing_telephone() . '<br>';
-            echo 'Email: ' . $order->get_billing_email() . '<br>';
-            echo 'Address: ' . $order->get_billing_address_1() . ', ' . $order->get_billing_city() . ', ' . $order->get_billing_district() . ', ' . $order->get_billing_ward() . '<br>';
-            echo 'Notes: ' . $order->get_meta('_order_notes') . '<br>';
-        } else {
-            echo 'Không thể lấy thông tin chi tiết đơn hàng!';
-        }
-    endwhile;
-    wp_reset_postdata();
-else :
-    echo 'Không có đơn hàng nào.';
-endif;
 ?>
 <div class="product-detail row">
     <?php
@@ -501,7 +471,7 @@ endif;
 
 
                 </div>
-                <a class="" href="javascript:void(0)">
+                <a class="" onclick="add_product_to_cart(this,'<?php echo $product->get_id() ?>',1)" href="javascript:void(0)">
                     <div class="btn-buy-now mt-2" >
                         MUA NGAY
                     </div>
@@ -590,7 +560,7 @@ endif;
         }
         $(`.quantity_value`).text(quantity_value)
    }
-    function add_product_to_cart(element,product_id) {
+    function add_product_to_cart(element,product_id,buy_now = 0) {
         if (element.dataset.clicked === "true") {
             return;
         }
@@ -604,33 +574,43 @@ endif;
                 quantity: quantity,
             },
             beforeSend: function() {
-                element.dataset.clicked = "true";
-                $(`.btn-adad-card`).html(`<i class='bx bx-loader-alt bx-spin'></i>`);
+                if(buy_now == 1){
+                    $(`.btn-buy-now`).html(`<i class='bx bx-loader-alt bx-spin'></i>`);
+                }else{
+                    element.dataset.clicked = "true";
+                    $(`.btn-adad-card`).html(`<i class='bx bx-loader-alt bx-spin'></i>`);
+                }
+
             },
             success: function(response) {
-                element.dataset.clicked = "false";
-                $(`.btn-adad-card`).html(`Thêm vào giỏ hàng`);
-                if (response.success) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Sản phẩm đã được thêm vào giỏ hàng!',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                    });
-                } else {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'error',
-                        title: 'Có lỗi xảy ra khi thêm sản phẩm.',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                    });
+                if(buy_now == 1){
+                    window.location.href = '<?php echo home_url('/thanh-toan') ?>';
+                }else{
+                    element.dataset.clicked = "false";
+                    $(`.btn-adad-card`).html(`Thêm vào giỏ hàng`);
+                    if (response.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Sản phẩm đã được thêm vào giỏ hàng!',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'Có lỗi xảy ra khi thêm sản phẩm.',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+                    }
                 }
+
             }
         });
     }

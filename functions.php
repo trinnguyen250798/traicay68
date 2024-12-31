@@ -199,12 +199,6 @@ function custom_rewrite_rule() {
 add_action('init', 'custom_rewrite_rule');
 
 
-/**
- * Lấy thông tin sản phẩm từ cơ sở dữ liệu dựa trên slug sản phẩm.
- *
- * @param string $product_slug Slug của sản phẩm.
- * @return object|null Thông tin sản phẩm hoặc null nếu không tìm thấy.
- */
 function get_product_by_slug($product_slug) {
     global $wpdb;
     $product_slug = sanitize_title($product_slug);
@@ -215,7 +209,7 @@ function get_product_by_slug($product_slug) {
 
     $product = $wpdb->get_row($wpdb->prepare("
         SELECT * FROM {$wpdb->posts} 
-        WHERE post_type = 'product' 
+WHERE post_type = 'product' 
         AND post_status = 'publish' 
         AND post_name = %s
     ", $product_slug));
@@ -253,9 +247,23 @@ function get_random_products($count = 4) {
     $products = wc_get_products($args);
     return $products;
 }
+function format_money($amount) {
+    return number_format($amount, 0, ',', '.');
+}
+function enqueue_select2_scripts() {
+    // Thêm CSS của Select2
+    wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css', array(), '4.1.0' );
+
+    // Thêm JavaScript của Select2
+    wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js', array('jquery'), '4.1.0', true );
+
+    // Tùy chỉnh Select2 nếu cần
+    wp_enqueue_script( 'custom-select2-js', get_template_directory_uri() . '/js/custom-select2.js', array('jquery', 'select2-js'), null, true );
+}
+add_action( 'wp_enqueue_scripts', 'enqueue_select2_scripts' );
+
 add_action('wp_ajax_add_to_cart', 'ajax_add_to_cart');
 add_action('wp_ajax_nopriv_add_to_cart', 'ajax_add_to_cart');
-
 function ajax_add_to_cart() {
     $product_id = isset($_POST['product_id']) ? intval($_POST['product_id']) : 0;
     $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 1;
@@ -268,13 +276,14 @@ function ajax_add_to_cart() {
 
     wp_die();
 }
+
+add_action('wp_ajax_get_cart', 'ajax_get_cart');
+add_action('wp_ajax_nopriv_get_cart', 'ajax_get_cart');
 function ajax_get_cart() {
     $cart_items = WC()->cart->get_cart();
     if ($cart_items) {
         $total = WC()->cart->subtotal;
-        $total_formatted = number_format((float)$total, 2, ',', '.');
         $cart_html = '';
-
         foreach ($cart_items as $cart_item_key => $cart_item) {
             $cart_item_data = $cart_item['data'];
             $product_id = $cart_item['product_id'];
@@ -310,8 +319,8 @@ function ajax_get_cart() {
     wp_die();
 }
 
-add_action('wp_ajax_get_cart', 'ajax_get_cart');
-add_action('wp_ajax_nopriv_get_cart', 'ajax_get_cart');
+add_action('wp_ajax_remove_item_cart', 'ajax_remove_item_cart');
+add_action('wp_ajax_nopriv_remove_item_cart', 'ajax_remove_item_cart');
 function ajax_remove_item_cart() {
     $cart_item_key = isset($_POST['cart_item_key']) ? $_POST['cart_item_key'] : '';
     $res = 0;
@@ -326,16 +335,10 @@ function ajax_remove_item_cart() {
     ]);
     wp_die();
 }
-add_action('wp_ajax_remove_item_cart', 'ajax_remove_item_cart');
-add_action('wp_ajax_nopriv_remove_item_cart', 'ajax_remove_item_cart');
 
 
-function format_money($amount) {
-    return number_format($amount, 0, ',', '.');
-}
-
-
-
+add_action('wp_ajax_update_cart_quantity', 'ajax_update_cart_item_quantity');
+add_action('wp_ajax_nopriv_update_cart_quantity', 'ajax_update_cart_item_quantity');
 function ajax_update_cart_item_quantity() {
     $cart_item_key = isset($_POST['cart_item_key']) ? sanitize_text_field($_POST['cart_item_key']) : '';
     $quantity = isset($_POST['quantity']) ? intval($_POST['quantity']) : 0;
@@ -353,8 +356,7 @@ function ajax_update_cart_item_quantity() {
     ]);
     wp_die();
 }
-add_action('wp_ajax_update_cart_quantity', 'ajax_update_cart_item_quantity');
-add_action('wp_ajax_nopriv_update_cart_quantity', 'ajax_update_cart_item_quantity');
+
 
 
 function get_provinces_from_api() {
@@ -389,6 +391,9 @@ function get_districts_from_city() {
 
     curl_close($ch);
 }
+
+add_action('wp_ajax_get_district_from_city', 'ajax_get_district_from_city');
+add_action('wp_ajax_nopriv_get_district_from_city', 'ajax_get_district_from_city');
 function ajax_get_district_from_city() {
     if (!isset($_POST['citi_id'])) {
         wp_send_json_error(['message' => 'Thành phố không hợp lệ']);
@@ -410,8 +415,7 @@ function ajax_get_district_from_city() {
     }
     curl_close($ch);
 }
-add_action('wp_ajax_get_district_from_city', 'ajax_get_district_from_city');
-add_action('wp_ajax_nopriv_get_district_from_city', 'ajax_get_district_from_city');
+
 
 function ajax_get_ward_from_district() {
     if (!isset($_POST['district_id'])) {
@@ -439,18 +443,6 @@ function ajax_get_ward_from_district() {
 }
 add_action('wp_ajax_get_ward_from_district', 'ajax_get_ward_from_district');
 add_action('wp_ajax_nopriv_get_ward_from_district', 'ajax_get_ward_from_district');
-
-function enqueue_select2_scripts() {
-    // Thêm CSS của Select2
-    wp_enqueue_style( 'select2-css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css', array(), '4.1.0' );
-
-    // Thêm JavaScript của Select2
-    wp_enqueue_script( 'select2-js', 'https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js', array('jquery'), '4.1.0', true );
-
-    // Tùy chỉnh Select2 nếu cần
-    wp_enqueue_script( 'custom-select2-js', get_template_directory_uri() . '/js/custom-select2.js', array('jquery', 'select2-js'), null, true );
-}
-add_action( 'wp_enqueue_scripts', 'enqueue_select2_scripts' );
 
 
 
@@ -508,45 +500,83 @@ add_action( 'wp_ajax_custom_checkout', 'custom_checkout_handler' );
 add_action( 'wp_ajax_nopriv_custom_checkout', 'custom_checkout_handler' );
 
 
-function custom_order_with_wc() {
-    // Kiểm tra yêu cầu
-    if( !isset($_POST['action']) || $_POST['action'] != 'create_custom_order_with_wc' ) {
-        wp_send_json_error( array( 'message' => 'Invalid request' ) );
-        wp_die();
+function create_guest_order() {
+    if ( ! isset( $_POST['address'] ) ) {
+        wp_send_json_error( [ 'message' => 'Thiếu thông tin địa chỉ.' ] );
     }
-
-    // Sanitize dữ liệu từ form
-    $fullname = sanitize_text_field( $_POST['fullname'] );
-    $telephone = sanitize_text_field( $_POST['telephone'] );
-    $email = sanitize_email( $_POST['email'] );
-    $city = sanitize_text_field( $_POST['city'] );
-    $district = sanitize_text_field( $_POST['district'] );
-    $ward = sanitize_text_field( $_POST['ward'] );
-    $address = sanitize_textarea_field( $_POST['address'] );
-    $note = sanitize_textarea_field( $_POST['note'] );
-
-    // Tạo mới một đơn hàng
+    $address = $_POST['address'];
+    if ( WC()->cart->is_empty() ) {
+        wp_send_json_error( [ 'message' => 'Giỏ hàng đang trống!' ] );
+    }
     $order = wc_create_order();
-    $order->set_customer_id( get_current_user_id() ); // Nếu muốn gắn với người dùng đã đăng nhập
+    $order_id = $order->get_id();
+    custom_admin_order_notification($order_id);
+    foreach ( WC()->cart->get_cart() as $cart_item ) {
+        $product_id = $cart_item['product_id'];
+        $quantity   = $cart_item['quantity'];
+        $order->add_product( wc_get_product( $product_id ), $quantity );
+    }
+    $billing_address = [
+        'first_name' => $address['first_name'],
+//        'last_name'  => $address['last_name'],
+        'email'      => $address['email'],
+        'phone'      => $address['phone'],
+        'address_1'  => $address['address_1'],
+        'address_2'  => $address['address_2'],
+        'city'       => $address['city'],
+        'state'      => $address['state'],
+        'ward'      => $address['ward'],
+        'postcode'   => $address['postcode'],
+        'country'    => $address['country'],
+    ];
 
-    // Cập nhật thông tin thanh toán
-    $order->set_billing_first_name( $fullname );
-    $order->set_billing_phone( $telephone );
-    $order->set_billing_email( $email );
-    $order->set_billing_city( $city );
-    $order->set_billing_address_1( $address );
-    $order->set_billing_postcode( $ward );
-    $order->set_customer_note( $note );
-
-    // Lưu đơn hàng
-    $order->save();
-
-    // Đặt trạng thái đơn hàng
-    $order->set_status( 'wc-processing' );
-    $order->save();
-
-    wp_send_json_success( array('order_id' => $order->get_id(), 'message' => 'Đặt hàng thành công!' ) );
-    wp_die();
+    $order->set_address( $billing_address, 'billing' );
+    $order->set_address( $billing_address, 'shipping' );
+    $order->calculate_totals();
+    $order->update_status( 'processing', 'Order created for guest user.' );
+    WC()->cart->empty_cart();
+    wp_send_json_success( [ 'order_id' =>$order_id, 'statusCode' => 200 ] );
 }
-add_action( 'wp_ajax_custom_order_with_wc', 'custom_order_with_wc' );
-add_action( 'wp_ajax_nopriv_custom_order_with_wc', 'custom_order_with_wc' );
+add_action( 'wp_ajax_create_guest_order', 'create_guest_order' );
+add_action( 'wp_ajax_nopriv_create_guest_order', 'create_guest_order' );
+
+function custom_admin_order_notification($order_id) {
+    $order = wc_get_order($order_id);
+    $admin_email = get_option('admin_email');
+
+    $subject = 'New Order Created - ID: ' . $order_id;
+    $message = 'A new order has been created with ID: ' . $order_id . '\n';
+    $message .= 'Customer Name: ' . $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() . '\n';
+    $message .= 'Email: ' . $order->get_billing_email() . '\n';
+    $message .= 'Total: ' . $order->get_total();
+
+    wp_mail($admin_email, $subject, $message);
+}
+add_action('woocommerce_new_order', 'custom_admin_order_notification', 10, 1);
+
+function lazy_load_images() {
+    ?>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var lazyImages = document.querySelectorAll("img.lazy");
+            if ("IntersectionObserver" in window) {
+                let imageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.remove("lazy");
+                            imageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                lazyImages.forEach(function(image) {
+                    imageObserver.observe(image);
+                });
+            }
+        });
+    </script>
+    <?php
+}
+add_action('wp_footer', 'lazy_load_images');

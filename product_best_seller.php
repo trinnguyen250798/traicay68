@@ -163,6 +163,20 @@ $list_best_seller = get_products_by_category_name('san-pham-ban-chay');
 
             height : 165px;
         }
+        .img-banner img {
+            width: 100%;
+            height: 100%;
+
+        }
+        .banner_mid  {
+            width: 100%;
+        }
+        .banner_mid .box-img {
+            gap:10px;
+        }
+        .banner_mid .box-img img {
+            width: 120px;
+        }
 
     }
 

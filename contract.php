@@ -59,7 +59,7 @@ if ($custom_logo_id) {
 </div>
 <script>
     function updateFbPageWidth() {
-        const fbPage = document.getElementById('fb-page');
+        const fbPage = document.getElementsByClassName('fb-page');
         const screenWidth = window.innerWidth;
 
         // Cập nhật giá trị data-width

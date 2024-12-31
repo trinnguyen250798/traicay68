@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Đình Trí">
+    <meta name="description" content="KP68 Fruit là một trong những công ty hàng đầu trong lĩnh vực cung cấp sỉ và lẻ Trái Cây Tươi tại Thành phố Hồ Chí Minh.">
+    <meta name="keywords" content="KP68 Fruit, traicay68, Trái cây nhập khẩu">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="KP68 Fruit - Trái cây nhập khẩu">
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>KP68 Fruit - Trái cây nhập khẩu</title>
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:type" content="website" />
+    <meta property="og:description" content="KP68 Fruit là một trong những công ty hàng đầu trong lĩnh vực cung cấp sỉ và lẻ Trái Cây Tươi tại Thành phố Hồ Chí Minh. Chúng tôi có thế mạnh về bán lẻ với" />
+    <meta property="og:url" content="https://traicay68.com/" />
+    <meta property="og:site_name" content="Trái Cây 68" />
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -78,9 +93,9 @@ if (isset($post)) {
             </div>
             <div class="col-sm-3 box-icon-right">
                 <div class="d-flex justify-content-end ">
-                    <i class='bx bx-user' ></i>
-                    <i class='bx bx-search' ></i>
-                    <i class='bx bx-heart' ></i>
+<!--                    <i class='bx bx-user' ></i>-->
+<!--                    <i class='bx bx-search' ></i>-->
+<!--                    <i class='bx bx-heart' ></i>-->
                     <a href="javascript:void(0)" onclick="open_cart()"> <i class='bx bx-shopping-bag'></i></a>
 
                 </div>
@@ -114,7 +129,6 @@ if (isset($post)) {
     $(window).scroll(function() {
 
         var stickyPoint = 2; // Điểm sticky của header
-        var header = $('header'); // Thay thế bằng selector của header bạn sử dụng
 
         if ($(window).scrollTop() >= stickyPoint) {
             header.addClass('header-top'); // Thêm class khi cuộn đến điểm sticky
@@ -123,7 +137,8 @@ if (isset($post)) {
             header.css('transition', 'all 0.3s ease-in-out');
             header.removeClass('header-top'); // Xóa class khi cuộn về đầu trang
         }
-    })
+    });
+
     const open_menu = () => {
         $('.menu-popup-overlay').fadeIn();
     }
@@ -196,5 +211,4 @@ if (isset($post)) {
     }
 </script>
 <?php wp_footer(); ?>
-</body>
-</html>
+

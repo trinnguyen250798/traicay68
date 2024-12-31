@@ -1,3 +1,4 @@
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v21.0"></script>
 <div class="row footer m-0 bg-white">
     <div class="col-sm-4">
         <p style="font-size: 16px;font-weight: 500;">  cập nhật những thông tin mới nhất từ chúng tôi</p>
@@ -7,18 +8,26 @@
       
     </div>
     <div class="col-sm-4">
-        <p><a href="">Khách hàng Thân Thiết</a></p>
-        <p><a href="">Chính sách giao hàng</a></p>
-        <p><a href="">Điều khoản và điều kiện</a></p>
-        <p><a href="">Chính sách bảo mật</a></p>
-      
-    </div>
-    <div class="col-sm-4">
+        <p><a href="<?php echo home_url('/chinh-sach-giao-hang') ?>">Chính sách giao hàng</a></p>
+        <p><a href="<?php echo home_url('/chinh-sach-bao-mat') ?>">Chính sách bảo mật</a></p>
         <p style="color:#646464">Liên Hệ Ngay với FP68 Fruit.</p>
         <p style="letter-spacing: 0.055em;word-spacing: 1px;">thứ 2 - thứ 7: 8:30 - 18:30 </p>
         <p><span style="color:#646464">Phone: </span>  0816896999  -  0588665666</p>
         <p><span style="color:#646464">Email: </span> traicay68@gmail.com</p>
         <p><span style="color:#646464">Cửa hàng: </span>  97 trần thánh tông - Tân Bình - HCM</p>
+
+    </div>
+    <div class="col-sm-4">
+        <div class="fb-page d-flex justify-content-center mt-2 mb-2"
+             data-href="https://www.facebook.com/profile.php?id=61570453135657"
+             data-tabs="timeline"
+             data-width="500"
+             data-height="200"
+             data-small-header="false"
+             data-adapt-container-width="true"
+             data-hide-cover="false"
+             data-show-facepile="true">
+        </div>
     </div>
     <div class="col-sm-12 row" style="margin-top: 100px;">
     <div class="col-sm-4">
@@ -47,3 +56,5 @@
     </div>
     </div>
 </div>
+</body>
+</html>

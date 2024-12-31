@@ -316,7 +316,7 @@ $total_pages = ceil($total_products / $litmit);
        if ($list_product->have_posts()) :
             while ($list_product->have_posts()) : $list_product->the_post();
                 global $product;
-
+                $formatted_price = '';
                 if(!empty($product->get_price())){
                     $formatted_price = number_format($product->get_price(), 0, '.', ',');
                 }
